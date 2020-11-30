@@ -1,13 +1,11 @@
 import cors from "cors";
 import express from "express";
 import { createConnection } from "typeorm";
-import errorHandler from "./errors/handler";
-import "express-async-errors";
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server-express";
-
 import { buildSchema } from "type-graphql";
 import { ExpensesResolver } from "./resolvers/expenses";
+import { UserResolver } from "./resolvers/user";
 
 const main = async () => {
   await createConnection();
@@ -17,14 +15,17 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [ExpensesResolver],
+      resolvers: [ExpensesResolver, UserResolver],
+    }),
+    context: ({ req, res }) => ({
+      req,
+      res,
     }),
   });
 
   apolloServer.applyMiddleware({ app });
 
   app.use(cors());
-  app.use(errorHandler);
 
   app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);

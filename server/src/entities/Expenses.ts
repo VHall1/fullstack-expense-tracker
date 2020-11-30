@@ -1,5 +1,6 @@
 import { ID, ObjectType, Field } from "type-graphql";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import User from "./User";
 
 @Entity()
 @ObjectType()
@@ -16,11 +17,21 @@ export default class Expenses {
   @Column()
   value: number;
 
-  @Field(() => String)
+  @Field()
   @Column()
   type: string;
 
-  @Field()
+  @Field(() => Date)
   @Column()
-  user_id: string;
+  created_at: Date;
+
+  @Field(() => Date)
+  @Column()
+  updated_at: Date;
+
+  @Field()
+  @ManyToOne(() => User, (user) => user.expenses, {
+    cascade: true,
+  })
+  user: User;
 }
