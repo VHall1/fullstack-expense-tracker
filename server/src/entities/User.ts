@@ -17,6 +17,10 @@ export default class User {
   @Column()
   username: string;
 
+  @Field()
+  @Column()
+  password: string;
+
   @Field(() => Date)
   @Column()
   created_at: Date;
